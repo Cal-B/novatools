@@ -1,0 +1,4 @@
+include Makefile.common
+
+flash: build/main.elf
+	$(QUIET)python -m msp430.bsl5.hid -e -r $<

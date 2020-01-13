@@ -1,3 +1,5 @@
+***NOTE: Fork is under development, please use original***
+
 * Novatools
 This is a collection of tools for reading, patching and flashing the
 Novatouch TKL firmware.

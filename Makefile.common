@@ -20,7 +20,7 @@ build/section_data_patch.bin: build/section_data.bin patch.py
 # IDA friendly elf file
 build/main.o: build/section_data_patch.bin build/section_isr.bin
 	@echo "Create main.o..."
-	$(QUIET)msp430-objcopy -I binary -O elf32-msp430 -B msp430:430X \
+	$(QUIET)msp430-elf-objcopy -I binary -O elf32-msp430 -B msp430:430X \
 		--rename-section .data=.text,contents,code,alloc,load,readonly \
 		--change-section-address .data=0x8000 \
 		--add-section .vectors=build/section_isr.bin \
@@ -30,13 +30,13 @@ build/main.o: build/section_data_patch.bin build/section_isr.bin
 
 build/enter_bsl.o: shellcode/enter_bsl.c
 	@echo "Compiling shellcode..."
-	$(QUIET)msp430-gcc -Os -mmcu=msp430f5510 -c $< -o $@
+	$(QUIET)msp430-elf-gcc -Os -mmcu=msp430f5510 -c $< -o $@
 
 # The main.o is an relocatable elf which we convert to an actual elf
 # for IDA to like it. Also link in our own objects
 build/main.elf: build/main.o build/enter_bsl.o
 	@echo "Create main.elf..."
-	$(QUIET)msp430-gcc -O0 -mmcu=msp430f5510 \
+	$(QUIET)msp430-elf-gcc -O0 -mmcu=msp430f5510 \
 		-Wl,--section-start=.text=0x8000 \
 		-Wl,--section-start=.vectors=0xffe0 \
 		-Wl,--entry=0x9ca6 \
